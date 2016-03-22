@@ -70,11 +70,26 @@ public class Queue<T> {
 			return null;
 		}
 		
-		//将stack1中的所有元素转移到stack2中，再从stack2栈顶取元素即可
-		while(stack1.getCurSize()>0){
-			stack2.push(stack1.pop());
+		//将stack1中的所有元素转移到stack2中，再从stack2栈顶取元素即可（错误！！！下面为修订版：）
+		//将stack2中的元素先出栈，若stack2中元素为空，此时将stack1中所有元素转移到stack2中，再出栈
+//		while(stack1.getCurSize()>0){
+//			stack2.push(stack1.pop());
+//		}
+		
+		//若stack2中不为空，则直接出队
+		if(stack2.getCurSize()>0){
+			curSize--;
+			return stack2.pop();
 		}
-		return stack2.pop();
+		//若stack2为空，则将stack1中所有元素转移到stack2中，再出队
+		else{
+			while(stack1.getCurSize()>0){
+				stack2.push(stack1.pop());
+			}
+			
+			curSize--;
+			return stack2.pop();
+		}
 	}
 	
 	
@@ -85,23 +100,43 @@ public class Queue<T> {
 	@Override
 	public String toString() {
 		System.out.println("Queue---maxSize:"+maxSize+"---curSize:"+curSize+"------");
+		//存储队列元素
+		StringBuffer sb = new StringBuffer();
+		
 		//队列为空
 		if(curSize==0){
 			System.out.println("队列为空");
 			return null;
 		}
 		
-		//若数据都在stack1中，则转到stack2中
-		if(stack1.getCurSize()>=0){
-			while(stack1.getCurSize()>0){
-				stack2.push(stack1.pop());
-			}
+//		//若数据都在stack1中，则转到stack2中
+//		if(stack1.getCurSize()>=0){
+//			while(stack1.getCurSize()>0){
+//				stack2.push(stack1.pop());
+//			}
+//		}
+//		
+//		//打印stack2中的元素
+//		for(int i=0;i<stack2.getCurSize();i++){
+//			System.out.println(stack2.top());
+//		}
+		
+		
+		//先打印stack2中的元素
+		while(stack2.getCurSize()>0){
+			sb.append(stack2.pop());
 		}
 		
-		//打印stack2中的元素
-		for(int i=0;i<stack2.getCurSize();i++){
-			System.out.println(stack2.top());
+		//若stack1中还有元素，则先将其转移到stack2，再将stack2中的元素打印
+		while(stack1.getCurSize()>0){
+			stack2.push(stack1.pop());
 		}
+		
+		while(stack2.getCurSize()>0){
+			sb.append(stack2.pop());
+		}
+		
+		System.out.println(sb.toString());
 		System.out.println("Queue--------------------------------------------------");
 		return null;
 	}
